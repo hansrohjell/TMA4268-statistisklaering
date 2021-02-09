@@ -85,6 +85,18 @@ id <- "1yYlEl5gYY3BEtJ4d7KWaFGIOEweJIn__" # google file ID
 d.corona <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id),header=T)
 
 
+table(d.corona$deceased)
+
+table(d.corona$country, d.corona$sex)
+
+table(d.corona$sex, d.corona$deceased)
+
+francedf <- subset(d.corona, country == "France")
+table(francedf$sex, francedf$deceased)
+
+
+
+
 ```
 
 
