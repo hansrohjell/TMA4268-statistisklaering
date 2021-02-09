@@ -79,3 +79,14 @@ ggplot(dfBias, aes(x = lambdas, y = bias)) + geom_line(color = "red") + xlab(exp
 # Problem 2
 
 ## a) 
+
+```{r}
+id <- "1yYlEl5gYY3BEtJ4d7KWaFGIOEweJIn__" # google file ID
+d.corona <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id),header=T)
+
+
+```
+
+
+
+
