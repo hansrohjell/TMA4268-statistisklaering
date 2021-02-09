@@ -57,6 +57,23 @@ sigma=values$sigma
 sigma
 ```
 
+## d) 
+
+```{r}
+library(ggplot2)
+bias = function(lambda, X, x0, beta) {
+    p = ncol(X)
+    value = ...
+    return(value)
+}
+lambdas = seq(0, 2, length.out = 500)
+BIAS = rep(NA, length(lambdas))
+for (i in 1:length(lambdas)) BIAS[i] = bias(lambdas[i], X, x0, beta)
+dfBias = data.frame(lambdas = lambdas, bias = BIAS)
+ggplot(dfBias, aes(x = lambdas, y = bias)) + geom_line(color = "red") + xlab(expression(lambda)) + 
+    ylab(expression(bias^2))
+```
+
  
 
 # Problem 2
