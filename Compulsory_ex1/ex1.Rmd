@@ -171,28 +171,82 @@ summary(fit)$coef
 ```
 From these readings we can conclude that there is not enough evidence to say that there is a higher risk of dying of corona in Indonesia than in France, since the p-value is not significant. For Japan and Korea the p-value is much more significant, and also has a negative estimate, which means that there is a higher risk of dying of corona in Japan and Korea than in France.
 
-###iv)
-A person is 10 years older than another person. The probability of dying is linear in terms of age, so we can see the probability of a person dying at an age of 65 and an age of 75 from task i.
+### iv)
+A person is 10 years older than another person. The probability of dying is linear in terms of age because of the logic regression, so we can see the probability of a person dying at an age of 65 and an age of 75 from task i and see that there is an increase of risk to die in case of higher age.
 
 ```{r}
-
-fit <- lm(as.numeric(deceased) ~ sex + country + age, data=d.corona)
-summary(fit)$coef
 
 deceasedmale75 <- fit$coefficients[6]*75 + fit$coefficients[2] + fit$coefficients[5]
 deceasedmale65 <- fit$coefficients[6]*65 + fit$coefficients[2] + fit$coefficients[5]
 
-
-
-
+diff <- (deceasedmale75 - deceasedmale65)*100
 
 
 ``` 
+This gives an age difference in `1.3%` and we see that the model is linear.
+
+## c)
+
+### i)
+
+```{r}
+fit <- glm(deceased ~ age*sex, data = d.corona, family = 'binomial')
+summary(fit)$coef
+
+
+```
+
+Here we see that the `age:sexmale` coefficients has a positive estimate, but doesn't have a significant p-value. Age has a slightly lower p-value, and we can see that age is not a greater risk factor for males than for females.
+
+
+### ii)
+
+
+```{r}
+fit <- glm(deceased ~ age*country, data = d.corona, family = 'binomial')
+summary(fit)$coef
+
+
+
+```
+No, the coefficient for the `age:countryindonesia` interaction is negative, which means that Indonesia is lower than it is for France. The p-value is slightly significant, which gives a low but greater risk factor for the Indonesian population than for the French.
+
+
+## d)
+
+```{r}
+
+fit <- glm(deceased ~ . ,data = d.corona , family = 'binomial')
+summary(fit)
+
+library(MASS)
+table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, 
+      true = d.corona$deceased)
+
+
+table(predict = predict(qda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
+
+```
+FALSE, TRUE, FALSE, FALSE
 
 
 ### Problem 3
 
 ## a)
+
+
+
+### Problem 4
+
+
+
+
+
+
+
+
+### Problem 5
+
 
 
 
