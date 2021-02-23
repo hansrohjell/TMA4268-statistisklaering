@@ -107,6 +107,7 @@ ggplot(dfBias, aes(x = lambdas, y = bias)) + geom_line(color = "red") + xlab(exp
 
 ```{r}
 id <- "1yYlEl5gYY3BEtJ4d7KWaFGIOEweJIn__" # google file ID
+
 d.corona <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id),header=T)
 
 
@@ -124,6 +125,7 @@ table(francedf$sex, francedf$deceased)
 
 ```
 ## b) 
+
 ### i)
 ```{r}
 
@@ -271,18 +273,38 @@ $$
 As we know, $\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ is linear for the covariates $x_n$
 
 (ii) 
-må endre på dette
+
 
 ```{r}
 library(caret)
-confusionMatrix(table(predict(logReg, type="response") >= 0.5,
-                      test$diabetes == 1))
+#install package e1071 (required to ensure correct levels in given manner)
+
+
+#make predictions on test set
+pred <- predict(logReg, newdata = test, type = "response")
+
+#convert predictions to numeric values (0/1)
+numpred <- as.numeric(pred>0.5)
+
+#create reference on test set
+reference <- test$diabetes
+
+#ensure correct levels
+u <- union(numpred, reference)
+t <- table(factor(numpred, u), factor(reference, u))
+
+#make confusion matrix (and sensitivity/specificity etc.)
+confusionMatrix(t)
+
+
 ```
 
 ## b
 
 
 $\pi_k$ is the prior probability that a random observation comes from the $k-th$ class.
+
+$\mu_k$ is the mean of $X$ 
 
 ### Problem 4
 
@@ -303,5 +325,4 @@ $\pi_k$ is the prior probability that a random observation comes from the $k-th$
 
 
 
-$\mu_k$ is the mean of $X$ 
 
