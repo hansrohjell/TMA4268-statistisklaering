@@ -224,6 +224,7 @@ summary(fit)
 library(MASS)
 table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, 
       true = d.corona$deceased)
+table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 
 table(predict = predict(qda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
@@ -269,7 +270,7 @@ e^{\beta_{sum}}}}) \\
 = \beta_{sum}
 
 
-$$
+\end{equation}
 As we know, $\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ is linear for the covariates $x_n$
 
 (ii) 
@@ -277,6 +278,7 @@ As we know, $\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \bet
 
 ```{r}
 library(caret)
+
 #install package e1071 (required to ensure correct levels in given manner)
 
 
@@ -295,6 +297,7 @@ t <- table(factor(numpred, u), factor(reference, u))
 
 #make confusion matrix (and sensitivity/specificity etc.)
 confusionMatrix(t)
+
 
 
 ```
@@ -316,6 +319,7 @@ $\mu_k$ is the mean of $X$
 
 
 ### Problem 5
+
 
 
 
