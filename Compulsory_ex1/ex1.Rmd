@@ -11,6 +11,8 @@ output:
 library(knitr)
 knitr::opts_chunk$set(echo = TRUE,tidy=TRUE,message=FALSE,warning=FALSE,strip.white=TRUE,prompt=FALSE,
                       cache=TRUE, size="scriptsize",fig.width=4, fig.height=3)
+library(tidyverse)
+
 ```
 
 ```{r rpackages,eval=FALSE,echo=FALSE}
@@ -122,7 +124,7 @@ table(francedf$sex, francedf$deceased)
 
 ```
 ## b) 
-###i)
+### i)
 ```{r}
 
 # Multiple Linear Regression Example
@@ -142,7 +144,7 @@ deceasedmale
 The probability of dying of Covid-19 for a male age in Korea is found to be `5.7%`.
 
 
-###ii)
+### ii)
 
 Does males have higher probability to die than females?
 
@@ -155,5 +157,44 @@ summary(fit)$coef
 
 
 ```
+
+The estimate readings for men dying of corona is positive, which means that we can conclude that men have a higher probability of dying of corona than women.
+
+
+###iii)
+
+```{r}
+
+fit <- glm(deceased ~ country, data = d.corona, family = 'binomial')
+summary(fit)$coef
+
+```
+From these readings we can conclude that there is not enough evidence to say that there is a higher risk of dying of corona in Indonesia than in France, since the p-value is not significant. For Japan and Korea the p-value is much more significant, and also has a negative estimate, which means that there is a higher risk of dying of corona in Japan and Korea than in France.
+
+###iv)
+A person is 10 years older than another person. The probability of dying is linear in terms of age, so we can see the probability of a person dying at an age of 65 and an age of 75 from task i.
+
+```{r}
+
+fit <- lm(as.numeric(deceased) ~ sex + country + age, data=d.corona)
+summary(fit)$coef
+
+deceasedmale75 <- fit$coefficients[6]*75 + fit$coefficients[2] + fit$coefficients[5]
+deceasedmale65 <- fit$coefficients[6]*65 + fit$coefficients[2] + fit$coefficients[5]
+
+
+
+
+
+
+``` 
+
+
+### Problem 3
+
+## a)
+
+
+
 
 
