@@ -154,8 +154,6 @@ fit <- glm(deceased ~ sex, data = d.corona, family = binomial)
 summary(fit)$coef
 
 
-
-
 ```
 
 The estimate readings for men dying of corona is positive, which means that we can conclude that men have a higher probability of dying of corona than women.
@@ -181,11 +179,14 @@ deceasedmale65 <- fit$coefficients[6]*65 + fit$coefficients[2] + fit$coefficient
 
 diff <- (deceasedmale75 - deceasedmale65)*100
 
-
 ``` 
+
 This gives an age difference in `1.3%` and we see that the model is linear.
 
+
+
 ## c)
+
 
 ### i)
 
@@ -193,8 +194,7 @@ This gives an age difference in `1.3%` and we see that the model is linear.
 fit <- glm(deceased ~ age*sex, data = d.corona, family = 'binomial')
 summary(fit)$coef
 
-
-```
+``` 
 
 Here we see that the `age:sexmale` coefficients has a positive estimate, but doesn't have a significant p-value. Age has a slightly lower p-value, and we can see that age is not a greater risk factor for males than for females.
 
@@ -234,7 +234,55 @@ FALSE, TRUE, FALSE, FALSE
 
 ## a)
 
+```{r, eval=T}
+#read file
+id <- "1i1cQPeoLLC_FyAH0nnqCnnrSBpn05_hO" # google file ID
+diab <- dget(sprintf("https://docs.google.com/uc?id=%s&export=download", id))
+t = MASS::Pima.tr2
+train = diab$ctrain
+test = diab$ctest
+```
 
+```{r}
+logReg = glm(diabetes~., data = train, family = "binomial")
+summary(logReg)
+```
+## (i)
+prove logit linear
+By denoting the term $\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ as $\beta_{sum}$, we can derive that
+
+$$
+\text{logit}(p_i) = \log(\frac{p_i}{1-p_i})
+= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}{1-\frac{e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}) \\
+= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}{\frac{1+e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}-\frac{e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}) \\
+= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}{\frac{1+e^{\beta_{sum}} - e^{\beta_{sum}}}{ 1+ 
+e^{\beta_{sum}}}}) \\
+= \log(\frac{e^{\beta_{sum}}}{1+e^{\beta_{sum}} - e^{\beta_{sum}}})
+= \beta_{sum}
+
+
+$$
+As we know, $\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ is linear for the covariates $x_n$
+
+(ii) 
+må endre på dette
+
+```{r}
+library(caret)
+confusionMatrix(table(predict(logReg, type="response") >= 0.5,
+                      test$diabetes == 1))
+```
+
+## b
+
+
+$\pi_k$ is the prior probability that a random observation comes from the $k-th$ class.
 
 ### Problem 4
 
@@ -251,4 +299,9 @@ FALSE, TRUE, FALSE, FALSE
 
 
 
+
+
+
+
+$\mu_k$ is the mean of $X$ 
 
