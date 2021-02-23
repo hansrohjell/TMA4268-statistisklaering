@@ -39,10 +39,33 @@ Or the same formula $Y_i  = f(x_i) + \varepsilon_i$ in-line.
 # Problem 1
 
 ## a)
+ We consider $Y=f(\mathbf {x})+\varepsilon, \text{ where } \text{E}(\varepsilon)=0 \text{ and } \text{Var}(\varepsilon)=\sigma^2.$
+ 
+We find the expected value for $\tilde{\beta}$ as 
+$$
+  E(\tilde{\beta}) = E[(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1}\mathbf{x}^T\mathbf{y}] \\
+  = (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} \mathbf{x}^T E[\mathbf{y}] \\
+  = (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} \mathbf{x}^T \mathbf{x} \beta + \lambda\mathbf{I}\beta - \lambda\mathbf{I}\beta \\
+  = (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} (-\lambda\mathbf{I})\beta + \mathbf{I}\beta \\
+  = \beta - \lambda(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})\beta
+$$
 
 ## b)
-
+ We let $\widetilde{f}(\mathbf{x}_0)=\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}$ The variance for $\widetilde{f}(\mathbf{x}_0)$ then becomes
+ 
+ $$
+ E[\widetilde{f}(\mathbf{x}_0)]=E[\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}] 
+ = \mathbf{x}_0^T E[\widetilde{\boldsymbol{\beta}}] \\
+ = \mathbf{x}_0^T(\beta - \lambda(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})\beta)
+ $$
+ For the variation we get 
+ $$
+ Var[\widetilde{f}(\mathbf{x}_0)] = \mathbf{x}_0^T Var[\widetilde{\boldsymbol{\beta}}]\mathbf{x} \\
+ = \mathbf{x}_0^T(\beta - \lambda(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})\beta)\mathbf{x}
+ $$
 ## c)
+
+
 
 ```{r, echo=TRUE, eval=TRUE}
 id <- "1X_8OKcoYbng1XvYFDirxjEWr7LtpNr1m" # google file ID
@@ -96,6 +119,20 @@ table(francedf$sex, francedf$deceased)
 
 
 
+
+```
+#b 
+
+```{r}
+
+# Multiple Linear Regression Example
+fit <- lm(as.numeric(deceased) ~ sex + country + age, data=d.corona)
+summary(fit)$coef # show results
+fit
+predict(fit)
+# diagnostic plots
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
+plot(fit)
 
 ```
 
