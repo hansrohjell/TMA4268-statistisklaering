@@ -221,16 +221,14 @@ No, the coefficient for the `age:countryindonesia` interaction is negative, whic
 fit <- glm(deceased ~ . ,data = d.corona , family = 'binomial')
 summary(fit)
 
-library(MASS)
-table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, 
-      true = d.corona$deceased)
+
 table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 
 table(predict = predict(qda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 ```
-FALSE, TRUE, FALSE, FALSE
+FALSE, TRUE, TRUE, FALSE
 
 
 ### Problem 3
@@ -251,10 +249,11 @@ logReg = glm(diabetes~., data = train, family = "binomial")
 summary(logReg)
 ```
 ## (i)
-prove logit linear
+prove that logit is linear
 By denoting the term $\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ as $\beta_{sum}$, we can derive that
 
-$$
+
+\begin{equation}
 \text{logit}(p_i) = \log(\frac{p_i}{1-p_i})
 = \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
 e^{\beta_{sum}}}}{1-\frac{e^{\beta_{sum}}}{ 1+ 
@@ -304,11 +303,68 @@ confusionMatrix(t)
 
 ## b
 
+(i)
+$\pi_k$ is the prior probability that a random observation comes from the $k-th$ class. As we have two classes, where class 0 have 200 observations and class 1 have 100 observations from the training set, we obtain that $\pi_0 \approx 0.67$ and $\pi_1 \approx 0.33$
 
-$\pi_k$ is the prior probability that a random observation comes from the $k-th$ class.
+$\mu_k$ is the mean of $X$. It is a vector of size $p$, where $p$ is the number of predictors, and it can be estimated to 
 
-$\mu_k$ is the mean of $X$ 
+$$
+\hat{\mu_k}=\frac{1}{n_k}\sum_{i:y_i=k}{x_i}
+$$
 
+
+$\boldsymbol{\Sigma}$ is the $p\times p$-covariance matrix of $X$ which is common for all classes.
+
+$f_k(x)$ is the multivariate Gaussian density, meaning the ...
+
+### ii)
+
+```{r}
+#table(predict = predict(lda(diabetes ~ glu + bmi + ped, data = train))$class,  true = train$diabetes)
+
+
+lda.fit = lda(diabetes ~ . , data = train)
+lda.pred = predict(lda.fit, test, type= 'prob')
+lda.table = table(predict = lda.pred$class, true = test$diabetes)
+lda.table
+
+
+qda.fit = qda(diabetes ~ ., data = train)
+qda.pred = predict(qda.fit, test)
+qda.table = table(predict = qda.pred$class, true = test$diabetes)
+qda.table
+```
+
+##c
+
+(i)
+
+A new observation $x_0$ is classified to the most occuring class of the K nearest nodes in the training data by Eucleidian distance. For K=1 $x_0$ is simply classified as the same class as the nearest node. 
+
+(ii)
+
+When choosing the tuning parameter k, one must consider the bias-variance trade off (small k leads to large bias, but low varaiance and vice verca). For this case we need a loss function and a validation set, which we will come back to. First, we split our data in to a test set, and a training set. Then, by applying cross validation to the training set, splitting up in training and validation sets, we are able to use the whole training set and still ensure a valid test set. The model is then fitted on the cross validated sets for different K, and a loss is computed for the validation set. The tuning parameter k is determined by evaluating for which K the valiation error is lowest. 
+
+an other approach is to apply bootstrapping on the training set.
+
+(iii)
+
+```{r}
+library(class)
+
+#traincl <- factor(diab[train, "classifications"])
+knnMod = knn(train = train, test = test, cl = train$diabetes, k = 25, prob = T)
+knnConfMat = table(knnMod, test$diabetes)
+
+knnConfMat
+
+sensitivity = knnConfMat[2,2]/(knnConfMat[2,2] + knnConfMat[1,2])
+sensitivity
+
+specificity = knnConfMat[1,1]/(knnConfMat[1,1] + knnConfMat[2,1])
+specificity
+
+```
 ### Problem 4
 
 
@@ -320,6 +376,19 @@ $\mu_k$ is the mean of $X$
 
 ### Problem 5
 
+Loading the bodyfat dataset given in the problem:
+```{r}
+id <- "19auu8YlUJJJUsZY8JZfsCTWzDm6doE7C" # google file ID
+d.bodyfat <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id),header=T)
+```
+## a)
+```{r}
+r.bodyfat <- lm(bodyfat ~ . , data = d.bodyfat)
+rsqrd <- summary(r.bodyfat)$r.squared
+rsqrd
+```
+
+The $R^{2}$ is found to be 0.728.
 
 
 
