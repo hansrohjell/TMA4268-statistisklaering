@@ -86,7 +86,7 @@ sigma
 library(ggplot2)
 bias = function(lambda, X, x0, beta) {
     p = ncol(X)
-    value = ...
+    value = 1
     return(value)
 }
 lambdas = seq(0, 2, length.out = 500)
@@ -121,21 +121,39 @@ table(francedf$sex, francedf$deceased)
 
 
 ```
-#b 
-
+## b) 
+###i)
 ```{r}
 
 # Multiple Linear Regression Example
 fit <- lm(as.numeric(deceased) ~ sex + country + age, data=d.corona)
 summary(fit)$coef # show results
-fit
-predict(fit)
-# diagnostic plots
-layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page
-plot(fit)
+
+#predict(fit)
+
+deceasedmale <- fit$coefficients[6]*75 + fit$coefficients[2] + fit$coefficients[5]
+
+deceasedmale
+
+
 
 ```
 
+The probability of dying of Covid-19 for a male age in Korea is found to be `5.7%`.
 
+
+###ii)
+
+Does males have higher probability to die than females?
+
+```{r}
+
+fit <- glm(deceased ~ sex, data = d.corona, family = binomial)
+summary(fit)$coef
+
+
+
+
+```
 
 
