@@ -219,15 +219,14 @@ No, the coefficient for the `age:countryindonesia` interaction is negative, whic
 fit <- glm(deceased ~ . ,data = d.corona , family = 'binomial')
 summary(fit)
 
-library(MASS)
-table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, 
-      true = d.corona$deceased)
+
+table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 
 table(predict = predict(qda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 ```
-FALSE, TRUE, FALSE, FALSE
+FALSE, TRUE, TRUE, FALSE
 
 
 ### Problem 3
@@ -251,7 +250,7 @@ summary(logReg)
 prove logit linear
 By denoting the term $\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ as $\beta_{sum}$, we can derive that
 
-$$
+\begin{equation}
 \text{logit}(p_i) = \log(\frac{p_i}{1-p_i})
 = \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
 e^{\beta_{sum}}}}{1-\frac{e^{\beta_{sum}}}{ 1+ 
@@ -267,7 +266,7 @@ e^{\beta_{sum}}}}) \\
 = \beta_{sum}
 
 
-$$
+\end{equation}
 As we know, $\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ is linear for the covariates $x_n$
 
 (ii) 
@@ -275,6 +274,7 @@ må endre på dette
 
 ```{r}
 library(caret)
+
 confusionMatrix(table(predict(logReg, type="response") >= 0.5,
                       test$diabetes == 1))
 ```
@@ -283,6 +283,8 @@ confusionMatrix(table(predict(logReg, type="response") >= 0.5,
 
 
 $\pi_k$ is the prior probability that a random observation comes from the $k-th$ class.
+
+$\mu_k$ is the mean of $X$ 
 
 ### Problem 4
 
@@ -303,5 +305,5 @@ $\pi_k$ is the prior probability that a random observation comes from the $k-th$
 
 
 
-$\mu_k$ is the mean of $X$ 
+
 
