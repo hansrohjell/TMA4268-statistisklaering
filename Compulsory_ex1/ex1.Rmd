@@ -460,6 +460,7 @@ hist(r2stored,
      main = "Distribution of R^2",
      xlab = "R^2",
      ylab = "Frequency" )
+abline(v = rsqrd)
 ```
 
 
@@ -480,16 +481,12 @@ confInverval
 
 
 
-
-
-
-
 ```
 
 
  ### iv)
  
- 
+ The $R^2$ value found in problem 5a) 
 
 
 
