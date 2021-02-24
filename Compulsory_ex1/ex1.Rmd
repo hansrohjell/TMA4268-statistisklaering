@@ -40,25 +40,17 @@ install.packages('formatR')
 
 
 
-For some problems you will need to include some LaTex code. Please install latex on your computer and then consult Compulsory1.Rmd for hints how to write formulas in LaTex. 
-
-An example:
-
-$$Y_i  = f(x_i) + \varepsilon_i \ ,$$
-
-Or the same formula $$Y_i  = f(x_i) + \varepsilon_i$$ in-line.
-
 
 # Problem 1
 
 ## a)
- We consider $$Y=f(\mathbf {x})+\varepsilon, \text{ where } \text{E}(\varepsilon)=0 \text{ and } \text{Var}(\varepsilon)=\sigma^2.$$
+ We consider $Y=f(\mathbf {x})+\varepsilon, \text{ where } \text{E}(\varepsilon)=0 \text{ and } \text{Var}(\varepsilon)=\sigma^2.$
  
-We find the expected value for $$\tilde{\beta}$$ as 
+We find the expected value for $\tilde{\beta}$ as 
 
 
 \begin{align}
-  E(\tilde{\beta}) = E[(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1}\mathbf{x}^T\mathbf{y}] \\
+  E(\tilde{\beta}) &= E[(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1}\mathbf{x}^T\mathbf{y}] \\
   &= (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} \mathbf{x}^T E[\mathbf{y}] \\
   &= (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} \mathbf{x}^T \mathbf{x} \beta + \lambda\mathbf{I}\beta - \lambda\mathbf{I}\beta \\
   &= (\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})^{-1} (-\lambda\mathbf{I})\beta + \mathbf{I}\beta \\
@@ -66,10 +58,10 @@ We find the expected value for $$\tilde{\beta}$$ as
 \end{align}
 
 ## b)
- We let $$\widetilde{f}(\mathbf{x}_0)=\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}$$ The variance for $$\widetilde{f}(\mathbf{x}_0)$$ then becomes
+ We let $\widetilde{f}(\mathbf{x}_0)=\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}$ The variance for $\widetilde{f}(\mathbf{x}_0)$ then becomes
  
  \begin{align}
- E[\widetilde{f}(\mathbf{x}_0)]=E[\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}] 
+ E[\widetilde{f}(\mathbf{x}_0)]&=E[\mathbf{x}_0^T \widetilde{\boldsymbol{\beta}}]\\ 
  &= \mathbf{x}_0^T E[\widetilde{\boldsymbol{\beta}}] \\
  &= \mathbf{x}_0^T(\beta - \lambda(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})\beta)
  \end{align}
@@ -78,12 +70,16 @@ We find the expected value for $$\tilde{\beta}$$ as
  For the variation we get 
  
  \begin{align}
- Var[\widetilde{f}(\mathbf{x}_0)] = \mathbf{x}_0^T Var[\widetilde{\boldsymbol{\beta}}]\mathbf{x} \\
+ Var[\widetilde{f}(\mathbf{x}_0)] &= \mathbf{x}_0^T Var[\widetilde{\boldsymbol{\beta}}]\mathbf{x} \\
  &= \mathbf{x}_0^T(\beta - \lambda(\mathbf{x}^T\mathbf{x}+\lambda \mathbf{I})\beta)\mathbf{x}
  \end{align}
  
  
 ## c)
+
+\begin{align}
+\text{E}[(y_0-\widetilde{f}(\mathbf{x}_0))^2]&=[\text{E}(\widetilde{f}(\mathbf{x}_0)-f(\mathbf{x}_0))]^2+\text{Var}(\widetilde{f}(\mathbf{x}_0) \\
+\end{align}
 
 
 ## d) 
@@ -107,7 +103,7 @@ sigma
 
 bias = function(lambda, X, x0, beta) {
     p = ncol(X)
-    value = 1
+    value = -lambda*(t(X)%*%X%*%beta + lambda*beta)
     return(value)
 }
 lambdas = seq(0, 2, length.out = 500)
@@ -129,45 +125,56 @@ id <- "1yYlEl5gYY3BEtJ4d7KWaFGIOEweJIn__" # google file ID
 
 d.corona <- read.csv(sprintf("https://docs.google.com/uc?id=%s&export=download", id),header=T)
 
+```
 
+Number of deceased and non-deceased [Non-deceased = 0, deceased = 1]
+```{r}
 table(d.corona$deceased)
+```
 
-table(d.corona$country, d.corona$sex)
+The number of males and females for each country
+```{r}
+table(Country = d.corona$country, sex = d.corona$sex)
+```
 
-table(d.corona$sex, d.corona$deceased)
 
+The number of deceased and non-deceased for each sex [Non-deceased = 0, deceased = 1]
+```{r}
+table(sex = d.corona$sex, deceased = d.corona$deceased)
+```
+
+The number of deceased and non-deceased in France, separated for each sex [Non-deceased = 0, deceased = 1]
+
+```{r}
 francedf <- subset(d.corona, country == "France")
 table(francedf$sex, francedf$deceased)
-
-
-
-
 ```
+
+
+
+
 ## b) 
 
 ### i)
-```{r}
 
-# Multiple Linear Regression Example
+The covariates sex, country and age is included to inspect te probability of dying of covid at age 75 in Korea. The function is fitted and summarized to get the coefficients. To get the age of 75 we had to multiply the covariate for age with 75.
+```{r}
 fit <- lm(as.numeric(deceased) ~ sex + country + age, data=d.corona)
 summary(fit)$coef # show results
 
-#predict(fit)
-
 deceasedmale <- fit$coefficients[6]*75 + fit$coefficients[2] + fit$coefficients[5]
 
-deceasedmale
-
+ 
 
 
 ```
 
-The probability of dying of Covid-19 for a male age in Korea is found to be $5.7\%$.
+The probability of dying of Covid-19 for a male at age 75 in Korea is found to be ```r round(deceasedmale*100, 3)```%.
 
 
 ### ii)
 
-Does males have higher probability to die than females?
+Do males have higher probability to die than females?
 
 ```{r}
 
@@ -177,10 +184,10 @@ summary(fit)$coef
 
 ```
 
-The estimate readings for men dying of corona is positive, which means that we can conclude that men have a higher probability of dying of corona than women.
+The estimate readings for men dying of corona is positive. At the same time the p-value for age is significant. This means that we can conclude that men have a higher probability of dying of corona than women.
 
 
-###iii)
+### iii)
 
 ```{r}
 
@@ -188,7 +195,7 @@ fit <- glm(deceased ~ country, data = d.corona, family = 'binomial')
 summary(fit)$coef
 
 ```
-From these readings we can conclude that there is not enough evidence to say that there is a higher risk of dying of corona in Indonesia than in France, since the p-value is not significant. For Japan and Korea the p-value is much more significant, and also has a negative estimate, which means that there is a higher risk of dying of corona in Japan and Korea than in France.
+From these readings we can conclude that there is not enough evidence to say that there is a higher risk of dying of corona in Indonesia than in France, since the p-value is not significant. For Japan and Korea the p-value is much more significant and less than the alpha value of 5%, and also has a negative estimate, which means that there is a higher risk of dying of corona in Japan and Korea than in France.
 
 ### iv)
 A person is 10 years older than another person. The probability of dying is linear in terms of age because of the logic regression, so we can see the probability of a person dying at an age of 65 and an age of 75 from task i and see that there is an increase of risk to die in case of higher age.
@@ -199,10 +206,9 @@ deceasedmale75 <- fit$coefficients[6]*75 + fit$coefficients[2] + fit$coefficient
 deceasedmale65 <- fit$coefficients[6]*65 + fit$coefficients[2] + fit$coefficients[5]
 
 diff <- (deceasedmale75 - deceasedmale65)*100
-
 ``` 
 
-This gives an age difference in $1.3\%$ and we see that the model is linear.
+This gives an age difference in `r round(diff, 3) `% 
 
 
 
@@ -217,35 +223,43 @@ summary(fit)$coef
 
 ``` 
 
-Here we see that the $`age:sexmale`$ coefficients has a positive estimate, but doesn't have a significant p-value. Age has a slightly lower p-value, and we can see that age is not a greater risk factor for males than for females.
+Here we see that the `age:sexmale` coefficients has a positive estimate, but doesn't have a significant p-value. Age has a slightly lower p-value, and we can see that age is not a greater risk factor for males than for females.
 
 
 ### ii)
 
-
+We fitted the function to find the relation with country and age.
 ```{r}
 fit <- glm(deceased ~ age*country, data = d.corona, family = 'binomial')
 summary(fit)$coef
 
 
 ```
-No, the coefficient for the $`age:countryindonesia`$ interaction is negative, which means that Indonesia is lower than it is for France. The p-value is slightly significant, which gives a low but greater risk factor for the Indonesian population than for the French.
+We found that the coefficient for the `age:countryindonesia` interaction is negative, which means that Indonesia is lower than it is for France. The p-value is slightly significant, which gives a low but greater risk factor for the Indonesian population than for the French.
 
 
 ## d)
-
+First we fitted the dataset with all the covariates
 ```{r}
 
 fit <- glm(deceased ~ . ,data = d.corona , family = 'binomial')
-summary(fit)
+summary(fit)$coef
+```
 
 
+Then we used the three predictor variables age, sex and country for LDA to print the confusion table for LDA 
+```{r}
 table(predict = predict(lda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
+```
 
+and did the same for the counfusion matrix for QDA
 
+```{r}
 table(predict = predict(qda(deceased ~ age + sex + country, data = d.corona))$class, true = d.corona$deceased)
 
 ```
+
+The answers will then be
 FALSE, TRUE, TRUE, FALSE
 
 
@@ -266,14 +280,14 @@ test = diab$ctest
 logReg = glm(diabetes~., data = train, family = "binomial")
 summary(logReg)
 ```
-## (i)
+### i)
 prove that logit is linear
 By denoting the term $\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$ as $\beta_{sum}$, we can derive that
 
 
 \begin{align}
 \text{logit}(p_i) = \log(\frac{p_i}{1-p_i})
-= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
+&= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
 e^{\beta_{sum}}}}{1-\frac{e^{\beta_{sum}}}{ 1+ 
 e^{\beta_{sum}}}}) \\
 &= \log(\frac{\frac{e^{\beta_{sum}}}{ 1+ 
@@ -289,14 +303,10 @@ e^{\beta_{sum}}}}) \\
 
 As we know, $$\beta_{sum}=\beta_0 + \beta_1x_{i1} + \beta_2 x_{i2} + \dots + \beta_7 x_{i7}$$ is linear for the covariates $x_n$
 
-(ii) 
+### ii) 
 
 
 ```{r}
-
-
-#install package e1071 (required to ensure correct levels in given manner)
-
 
 #make predictions on test set
 pred <- predict(logReg, newdata = test, type = "response")
@@ -312,13 +322,12 @@ u <- union(numpred, reference)
 t <- table(factor(numpred, u), factor(reference, u))
 
 #make confusion matrix (and sensitivity/specificity etc.)
-confusionMatrix(t)
-
-
+confusionMatrix(t)$table
+confusionMatrix(t)$byClass
 
 ```
 
-## b
+## b)
 
 (i)
 $\pi_k$ is the prior probability that a random observation comes from the $k-th$ class. As we have two classes, where class 0 have 200 observations and class 1 have 100 observations from the training set, we obtain that $\pi_0 \approx 0.67$ and $\pi_1 \approx 0.33$
@@ -348,19 +357,19 @@ lda.table
 
 qda.fit = qda(diabetes ~ ., data = train)
 qda.pred = predict(qda.fit, test)
-qda.table = table(predict = qda.pred$class, true = test$diabetes)
-qda.table
+table(predict = qda.pred$class, true = test$diabetes)
+
 ```
 
-##c
+## c)
 
-(i)
+### i)
 
 A new observation $x_0$ is classified to the most occuring class of the K nearest nodes in the training data by Eucleidian distance. For K=1 $x_0$ is simply classified as the same class as the nearest node. 
 
-(ii)
+### ii)
 
-When choosing the tuning parameter k, one must consider the bias-variance trade off (small k leads to large bias, but low varaiance and vice verca). For this case we need a loss function and a validation set, which we will come back to. First, we split our data in to a test set, and a training set. Then, by applying cross validation to the training set, splitting up in training and validation sets, we are able to use the whole training set and still ensure a valid test set. The model is then fitted on the cross validated sets for different K, and a loss is computed for the validation set. The tuning parameter k is determined by evaluating for which K the valiation error is lowest. 
+When choosing the tuning parameter $k$, one must consider the bias-variance trade off (small k leads to large bias, but low varaiance and vice verca). For this case we need a loss function and a validation set, which we will come back to. First, we split our data in to a test set, and a training set. Then, by applying cross validation to the training set, splitting up in training and validation sets, we are able to use the whole training set and still ensure a valid test set. The model is then fitted on the cross validated sets for different K, and a loss is computed for the validation set. The tuning parameter k is determined by evaluating for which K the valiation error is lowest. 
 
 an other approach is to apply bootstrapping on the training set.
 
@@ -416,22 +425,59 @@ The $R^{2}$ is found to be 0.728.
 ### i) 
 Generate 1000 bootstrap samples of the $R^{2}$
 
+
+
 ```{r}
 
-N = length(d.bodyfat[,1])
+N = length(d.bodyfat[,1]) #Finding length of bodyfat
 
 
 set.seed(4268)
 #boot(data = r.bodyfat, statistic = , R = 1000)
 index <- sample(1:N, N, replace = TRUE)
-
+  
 newdata.d <- d.bodyfat[index, ]
 
 B = 1000
 
-for (i in i:B){
+r2stored <- rep(0, B) #Generating a list with B zeros
+
+for (i in 1:B){
+  index <- sample(1:N, N, replace = TRUE) #Generating randon integers from 1, length of dataset
+  newbodyfat.d <- d.bodyfat[index, ] #creating a new dataset with the generated indexes
+  bodyfat.boot <- lm(bodyfat ~ . , data = newbodyfat.d)#fitting the regression model
+  r2stored[i] = summary(bodyfat.boot)$r.squared #appending r squared to the r2stored list.
   
 }
+```
+
+
+### ii)
+Plotting the distribution of the values of $R^{2}$
+
+```{r}
+hist(r2stored,
+     main = "Distribution of R^2",
+     xlab = "R^2",
+     ylab = "Frequency" )
+```
+
+
+
+### iii)
+
+
+
+```{r}
+index <- sample(1:N, N, replace = TRUE)
+
+mean.r2 = mean(r2stored)
+SE = sqrt(1/(B-1)*sum((r2stored - mean.r2)^2))
+confInverval = quantile(r2stored, probs = c(5, 95)/100)
+
+SE
+confInverval
+
 
 
 
@@ -441,11 +487,9 @@ for (i in i:B){
 ```
 
 
-
-
-
-
-
+ ### iv)
+ 
+ 
 
 
 
